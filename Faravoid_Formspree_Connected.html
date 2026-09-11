@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Faravoid - websites, drafted and built</title>
+<meta name="description" content="Faravoid is a small web studio. Book a quote call with an engineer, get a written plan, then get your site built.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#000000;
+    --ink-2:#000000;
+    --paper:#000000;
+    --paper-2:#E2E4E9;
+    --line:#6c676798;
+    --line-paper:#ffef15;
+    --blue:#ffef15;
+    --blue-dim:#ffef15;
+    --signal:#ffef15;
+    --text-dark:#eeeae7;
+    --text-dark-soft:#ffffff;
+    --text-paper:#ffffff;
+    --text-paper-soft:hsl(0, 25%, 95%);
+    --mono:'IBM Plex Mono', ui-monospace, monospace;
+    --sans:'IBM Plex Sans', -apple-system, sans-serif;
+    --display:'Space Grotesk', var(--sans);
+    --rule-w:52px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:var(--sans);
+    background:var(--paper);
+    color:var(--text-paper);
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+a{
+  color:inherit;
+  text-decoration:none;
+}
+  /* ---------- left ruler nav ---------- */
+  .ruler{
+    position:fixed; left:0; top:0; bottom:0; width:var(--rule-w);
+    background:var(--ink); z-index:50;
+    display:flex; flex-direction:column; align-items:center;
+    border-right:1px solid var(--line);
+  }
+  .ruler .mark{
+    flex:1; width:100%;
+    display:flex; align-items:center; justify-content:center;
+    position:relative; cursor:pointer;
+    border-bottom:1px solid var(--line);
+  }
+  .ruler .mark:last-child{border-bottom:none;}
+  .ruler .mark span{
+    font-family:var(--mono); font-size:11px; color:var(--text-dark-soft);
+    writing-mode:vertical-rl; transform:rotate(180deg);
+    letter-spacing:0.04em; transition:color .2s ease;
+  }
+  .ruler .mark:hover span, .ruler .mark.active span{color:var(--signal);}
+  .ruler .mark::before{
+    content:""; position:absolute; left:8px; top:10px;
+    width:6px; height:1px; background:var(--line);
+  }
+  .ruler-logo{
+    height:64px; width:100%; display:flex; align-items:center; justify-content:center;
+    border-bottom:1px solid var(--line); flex:none;
+  }
+  .ruler-logo span{
+    font-family:var(--display); font-weight:600; font-size:14px; color:var(--signal);
+  }
+
+  main{margin-left:var(--rule-w);}
+  section{position:relative;}
+  .sheet-pad{padding:120px 8vw;}
+  @media (max-width:820px){ .sheet-pad{padding:88px 6vw;} }
+
+  .wrap{max-width:1080px; margin:0 auto;}
+  .kicker{
+    font-family:var(--mono); font-size:12.5px; color:var(--text-paper-soft);
+    letter-spacing:0.01em; margin-bottom:18px;
+  }
+  .kicker.on-dark{color:var(--text-dark-soft);}
+  h1,h2,h3{font-family:var(--display); font-weight:600; letter-spacing:-0.01em; color:inherit;}
+
+  /* ---------- hero ---------- */
+  #cover{
+    background:var(--ink); color:var(--text-dark); min-height:100vh;
+    display:flex; flex-direction:column; justify-content:space-between;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size:64px 64px;
+    background-position:-1px -1px;
+  }
+  .hero-top{
+    display:flex; justify-content:space-between; align-items:flex-start;
+    padding:36px 6vw 0;
+  }
+  .wordmark{font-family:var(--display); font-weight:700; font-size:20px; letter-spacing:-0.01em;}
+  .wordmark em{font-style:normal; color:var(--signal);}
+  .coord{
+    font-family:var(--mono); font-size:12.5px; color:var(--text-dark-soft);
+    text-align:right; line-height:1.6; min-width:150px;
+  }
+  .coord b{color:var(--blue); font-weight:500;}
+
+  .hero-main{
+    padding:0 6vw; flex:1; display:flex; align-items:center;
+  }
+  .hero-main .wrap{width:100%;}
+
+  .hero-grid{
+    display:grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap:56px;
+    align-items:center;
+    width:100%;
+  }
+
+  h1.headline{
+    font-size:clamp(2.4rem, 4.6vw, 4.4rem);
+    line-height:1.05;
+    max-width:14ch;
+  }
+  .headline .stroke{color:var(--blue);}
+  .lede{
+    font-family:var(--sans); font-size:1.08rem; line-height:1.65;
+    color:var(--text-dark-soft); max-width:46ch; margin-top:28px;
+  }
+  .hero-ctas{display:flex; gap:14px; margin-top:38px; flex-wrap:wrap;}
+
+  /* ---------- hero image placeholder ---------- */
+  .hero-image-slot{
+    position:relative;
+    aspect-ratio: 6 / 5;
+    border:none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:
+      repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 111px,
+        rgba(255,239,21,0.05) 11px,
+        rgba(6, 6, 6, 0.05) 12px
+      );
+    overflow:visible;
+  }
+  .hero-image-slot img{
+    width:145%;
+    height:115%;
+    max-width:none;
+    max-height:none;
+    object-fit:contain;
+    display:block;
+  }
+  .hero-image-slot .corner{position:absolute; width:11px; height:11px; border:1px solid var(--blue); z-index:2;}
+  .hero-image-slot .corner.tl{top:-1px; left:-1px; border-right:none; border-bottom:none;}
+  .hero-image-slot .corner.tr{top:-1px; right:-1px; border-left:none; border-bottom:none;}
+  .hero-image-slot .corner.bl{bottom:-1px; left:-1px; border-right:none; border-top:none;}
+  .hero-image-slot .corner.br{bottom:-1px; right:-1px; border-left:none; border-top:none;}
+  .hero-image-slot .hero-image-label{
+    font-family:var(--mono); font-size:12px; color:var(--text-dark-soft);
+    text-align:center; line-height:1.8; letter-spacing:0.02em; padding:0 20px;
+  }
+  .hero-image-slot .hero-image-label b{color:var(--blue); font-weight:500;}
+
+  @media (max-width:900px){
+    .hero-grid{grid-template-columns:1fr; gap:34px;}
+    .hero-image-slot{order:2; aspect-ratio:16/10;}
+    .hero-text{order:1;}
+  }
+
+  .hero-bottom{
+    display:flex; justify-content:space-between; align-items:flex-end;
+    padding:0 6vw 40px; font-family:var(--mono); font-size:12px; color:var(--text-dark-soft);
+    gap:20px; flex-wrap:wrap;
+  }
+  .scroll-cue{display:flex; align-items:center; gap:8px;}
+  .scroll-cue .line{width:28px; height:1px; background:var(--text-dark-soft);}
+
+  .btn{
+    font-family:var(--sans); font-size:15px; font-weight:500;
+    padding:14px 26px; border-radius:2px; border:1px solid transparent;
+    cursor:pointer; display:inline-flex; align-items:center; gap:10px;
+    transition:transform .15s ease, background .2s ease, border-color .2s ease;
+  }
+  .btn:active{transform:translateY(1px);}
+  .btn-solid{background:var(--signal); color:#171009;}
+  .btn-solid:hover{background:#ff6438;}
+  .btn-ghost{border-color:var(--line); color:var(--text-dark);}
+  .btn-ghost:hover{border-color:var(--blue);}
+  .btn-ghost.on-paper{border-color:var(--line-paper); color:var(--text-paper);}
+  .btn-ghost.on-paper:hover{border-color:var(--blue);}
+
+  /* ---------- services (A1) ---------- */
+  #services{background:var(--paper);}
+  .service-row{
+    display:grid; grid-template-columns:1fr 2.2fr auto;
+    gap:28px; align-items:start;
+    padding:26px 0; border-top:1px solid var(--line-paper);
+  }
+  .service-row:last-of-type{border-bottom:1px solid var(--line-paper);}
+  .service-row h3{font-size:1.28rem; font-weight:500;}
+  .service-row p{color:var(--text-paper-soft); font-size:0.98rem; line-height:1.6; max-width:52ch;}
+  .service-row .dur{font-family:var(--mono); font-size:13px; color:var(--blue); white-space:nowrap; padding-top:5px;}
+  @media (max-width:720px){
+    .service-row{grid-template-columns:1fr; gap:8px;}
+  }
+
+  /* ---------- process (A2) ---------- */
+  #process{background:var(--ink); color:var(--text-dark);}
+  .steps{display:flex; flex-direction:column; margin-top:50px;}
+  .step{
+    display:grid; grid-template-columns:70px 1fr;
+    gap:22px; padding:28px 0; border-top:1px solid var(--line);
+    position:relative;
+  }
+  .step:last-child{border-bottom:1px solid var(--line);}
+  .step-num{font-family:var(--mono); font-size:14px; color:var(--blue); padding-top:4px;}
+  .step h3{font-size:1.2rem; font-weight:500; margin-bottom:8px;}
+  .step p{color:var(--text-dark-soft); font-size:0.98rem; line-height:1.6; max-width:56ch;}
+
+  /* ---------- work (A3) ---------- */
+  #work{background:var(--paper);}
+  .work-grid{
+    display:grid; grid-template-columns:repeat(2, 1fr); gap:1px;
+    background:var(--line-paper); margin-top:50px; border:1px solid var(--line-paper);
+  }
+  @media (max-width:720px){.work-grid{grid-template-columns:1fr;}}
+  .work-card{
+    background:var(--paper); padding:34px; position:relative;
+    min-height:210px; display:flex; flex-direction:column; justify-content:space-between;
+  }
+  .work-card .corner{position:absolute; width:9px; height:9px; border:1px solid var(--blue);}
+  .work-card .corner.tl{top:10px; left:10px; border-right:none; border-bottom:none;}
+  .work-card .corner.br{bottom:10px; right:10px; border-left:none; border-top:none;}
+  .work-card h3{font-size:1.15rem; font-weight:500; margin-bottom:10px;}
+  .work-card p{color:var(--text-paper-soft); font-size:0.94rem; line-height:1.55;}
+  .work-icon{width:34px; height:34px; margin-bottom:18px;}
+
+  /* ---------- booking (A4) ---------- */
+  #book{background:var(--ink); color:var(--text-dark);}
+  .tabs{display:flex; gap:0; margin-top:44px; border:1px solid var(--line); width:fit-content;}
+  .tab{
+    font-family:var(--sans); font-size:14.5px; font-weight:500;
+    padding:13px 24px; background:transparent; color:var(--text-dark-soft);
+    border:none; cursor:pointer; border-right:1px solid var(--line);
+  }
+  .tab:last-child{border-right:none;}
+  .tab.active{background:var(--paper); color:var(--text-paper);}
+
+  .panel{margin-top:32px; display:none;}
+  .panel.active{display:block;}
+  .form-grid{
+    display:grid; grid-template-columns:1fr 1fr; gap:22px 26px;
+    background:var(--ink-2); border:1px solid var(--line); padding:36px;
+  }
+  @media (max-width:720px){.form-grid{grid-template-columns:1fr; padding:24px;}}
+  .field{display:flex; flex-direction:column; gap:8px;}
+  .field.full{grid-column:1/-1;}
+  .field label{font-family:var(--mono); font-size:12.5px; color:var(--text-dark-soft);}
+  .field input, .field select, .field textarea{
+    font-family:var(--sans); font-size:15px; color:var(--text-dark);
+    background:transparent; border:none; border-bottom:1px solid var(--line);
+    padding:9px 2px; outline:none; transition:border-color .2s ease;
+  }
+  .field select{color:var(--text-dark);}
+  .field select option{background:var(--ink-2); color:var(--text-dark);}
+  .field input:focus, .field select:focus, .field textarea:focus{border-color:var(--signal);}
+  .field textarea{resize:vertical; min-height:88px; font-family:var(--sans); line-height:1.5;}
+  .field input::placeholder, .field textarea::placeholder{color:#565f76;}
+
+  .form-foot{
+    display:flex; justify-content:space-between; align-items:center;
+    margin-top:26px; flex-wrap:wrap; gap:16px;
+  }
+  .form-note{font-family:var(--mono); font-size:12px; color:var(--text-dark-soft); max-width:38ch;}
+
+  .stamp-result{
+    display:none; margin-top:32px; border:1px solid var(--signal);
+    padding:30px 32px; position:relative; background:var(--ink-2);
+  }
+  .stamp-result.show{display:block;}
+  .stamp-result .ref{font-family:var(--mono); color:var(--signal); font-size:13px; margin-bottom:10px;}
+  .stamp-result h3{font-size:1.3rem; margin-bottom:10px;}
+  .stamp-result p{color:var(--text-dark-soft); font-size:0.96rem; line-height:1.6; max-width:52ch;}
+
+  /* ---------- footer (A5) ---------- */
+  footer{background:var(--paper); border-top:1px solid var(--line-paper);}
+  .foot-grid{
+    display:grid; grid-template-columns:1.4fr 1fr 1fr; gap:40px;
+    padding:70px 8vw 40px;
+  }
+  @media (max-width:720px){.foot-grid{grid-template-columns:1fr; gap:34px; padding:56px 6vw 30px;}}
+  .foot-grid h3{font-size:1.5rem; font-weight:500; max-width:14ch;}
+  .foot-col p, .foot-col a{
+    display:block; font-size:0.95rem; color:var(--text-paper-soft);
+    line-height:2; text-decoration:none;
+  }
+  .foot-col a:hover{color:var(--blue);}
+  .foot-label{font-family:var(--mono); font-size:12px; color:var(--text-paper-soft); margin-bottom:10px;}
+  .foot-bottom{
+    display:flex; justify-content:space-between; padding:20px 8vw;
+    border-top:1px solid var(--line-paper); font-family:var(--mono); font-size:11.5px;
+    color:var(--text-paper-soft); flex-wrap:wrap; gap:10px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{transition:none !important;}
+  }
+
+  @media (max-width:600px){
+    .ruler{width:34px; --rule-w:34px;}
+    :root{--rule-w:34px;}
+    .ruler .mark span{font-size:9.5px;}
+    .ruler-logo{height:48px;}
+  }
+</style>
+</head>
+<body>
+
+<nav class="ruler" aria-label="Sheet navigation">
+  <div class="ruler-logo"><span>FV</span></div>
+  <a class="mark active" href="#cover" data-target="cover"><span>A0 — Cover</span></a>
+  <a class="mark" href="#services" data-target="services"><span>A1 — Services</span></a>
+  <a class="mark" href="#process" data-target="process"><span>A2 — Process</span></a>
+  <a class="mark" href="#work" data-target="work"><span>A3 — Work</span></a>
+  <a class="mark" href="#book" data-target="book"><span>A4 — Booking</span></a>
+  <a class="mark" href="#contact" data-target="contact"><span>A5 — Contact</span></a>
+</nav>
+
+<main>
+
+  <!-- A0 COVER -->
+  <section id="cover">
+    <div class="hero-top">
+      <div class="wordmark">fara<em>void</em></div>
+      <div class="coord" id="coordReadout">X <b>000</b> · Y <b>000</b><br>SCALE 1:1</div>
+    </div>
+
+    <div class="hero-main">
+      <div class="wrap hero-grid">
+        <div class="hero-text">
+          <h1 class="headline">Websites, <span class="stroke">drafted</span> before they're built.</h1>
+          <p class="lede">Faravoid is a small studio. Before anyone writes a line of code, you get a plan on paper — pages, features, timeline, price. Then an engineer, not a template, builds it.</p>
+          <div class="hero-ctas">
+            <a class="btn btn-solid" href="#book">Book a quote call</a>
+            <a class="btn btn-ghost" href="#process">See how it works</a>
+          </div>
+        </div>
+
+        <!--
+          HERO IMAGE PLACEHOLDER
+          To drop in your own image, replace the <span class="hero-image-label">...</span> line below with:
+          <img src="your-image.jpg" alt="Describe the image">
+          Keep it in the same folder as this HTML file, or use a full URL.
+        -->
+        <div class="hero-image-slot">
+          <div class="corner tl"></div>
+          <div class="corner tr"></div>
+          <div class="corner bl"></div>
+          <div class="corner br"></div>
+          <img src="hero.png" alt="Faravoid — website design and development">
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-bottom">
+      <span>Faravoid Web Studio — Sheet A0</span>
+      <div class="scroll-cue"><span class="line"></span><span>Scroll</span></div>
+    </div>
+  </section>
+
+  <!-- A1 SERVICES -->
+  <section id="services" class="sheet-pad">
+    <div class="wrap">
+      <div class="kicker">Sheet A1</div>
+      <h2 style="font-size:clamp(1.8rem,3.4vw,2.6rem); max-width:16ch;">Services we provide</h2>
+
+      <div style="margin-top:50px;">
+        <div class="service-row">
+          <h3>Websites</h3>
+          <p>Custom, high-converting designs and modern rebuilds engineered to elevate your brand.</p>
+          <div class="dur">1–3 weeks</div>
+        </div>
+        <div class="service-row">
+          <h3>Advertisements</h3>
+          <p>Human-crafted, high-impact visual campaigns designed to convert—no generic AI fluff.</p>
+          <div class="dur">2–4 weeks</div>
+        </div>
+        <div class="service-row">
+          <h3>Bookings &amp; checkout</h3>
+          <p>Appointment calendars, quote forms, payment and checkout — wired up properly so they actually notify the right person and don't silently fail.</p>
+          <div class="dur">1–3 weeks</div>
+        </div>
+        <div class="service-row">
+          <h3>Social Media Management</h3>
+          <p>Consistent, on-brand content creation, scheduling, and community growth handled entirely for you.</p>
+          <div class="dur">Monthly</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- A2 PROCESS -->
+  <section id="process" class="sheet-pad">
+    <div class="wrap">
+      <div class="kicker on-dark">Sheet A2</div>
+      <h2 style="font-size:clamp(1.8rem,3.4vw,2.6rem); max-width:16ch;">How a project actually runs</h2>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">01</div>
+          <div><h3>Quote call</h3><p>Twenty minutes with the engineer who'd actually build your site — not a salesperson. You describe what you need, and get an honest read on what it takes and roughly what it costs.</p></div>
+        </div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <div><h3>The blueprint</h3><p>A short written plan lands in your inbox: pages, features, a timeline, and a fixed price. Nothing starts until you've said yes to that document.</p></div>
+        </div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <div><h3>Build</h3><p>We build against a private preview link you can open anytime — no waiting for a "big reveal." Short weekly check-ins keep it moving in the right direction.</p></div>
+        </div>
+        <div class="step">
+          <div class="step-num">04</div>
+          <div><h3>Launch</h3><p>We move it onto your domain, test it on real devices, and hand you the login details and a short doc on how to update things yourself.</p></div>
+        </div>
+        <div class="step">
+          <div class="step-num">05</div>
+          <div><h3>Care, if you want it</h3><p>Optional monthly support once you're live — someone on call for fixes, edits, and keeping things running.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- A3 WORK -->
+  <section id="work" class="sheet-pad">
+    <div class="wrap">
+      <div class="kicker">Sheet A3</div>
+      <h2 style="font-size:clamp(1.8rem,3.4vw,2.6rem); max-width:18ch;">Our Customers</h2>
+
+      <div class="work-grid">
+        <div class="work-card">
+          <div class="corner tl"></div>
+          <div>
+            <svg class="work-icon" viewBox="0 0 34 34" fill="none"><rect x="2" y="6" width="30" height="22" stroke="#ffef15" stroke-width="1.4"/><path d="M2 12h30" stroke="#ffef15" stroke-width="1.4"/><circle cx="7" cy="9" r="1" fill="#ffef15"/></svg>
+            <h3>Marketing &amp; brand sites</h3>
+            <p>The site people find before they ever talk to you. Fast, clear about what you do, easy to find on a phone.</p>
+          </div>
+          <div class="corner br"></div>
+        </div>
+        <div class="work-card">
+          <div class="corner tl"></div>
+          <div>
+            <svg class="work-icon" viewBox="0 0 34 34" fill="none"><rect x="4" y="3" width="26" height="28" rx="1" stroke="#ffef15" stroke-width="1.4"/><path d="M9 11h16M9 17h16M9 23h9" stroke="#ffef15" stroke-width="1.4"/></svg>
+            <h3>Online stores</h3>
+            <p>Product pages, cart, and checkout that doesn't lose the sale halfway through.</p>
+          </div>
+          <div class="corner br"></div>
+        </div>
+        <div class="work-card">
+          <div class="corner tl"></div>
+          <div>
+            <svg class="work-icon" viewBox="0 0 34 34" fill="none"><rect x="3" y="6" width="28" height="22" rx="1" stroke="#ffef15" stroke-width="1.4"/><path d="M3 14h28" stroke="#ffef15" stroke-width="1.4"/><path d="M9 20h4M17 20h8" stroke="#ffef15" stroke-width="1.4"/></svg>
+            <h3>Booking-driven sites</h3>
+            <p>Calendars, quote requests, intake forms — the same kind of thing you're using on this page to reach us.</p>
+          </div>
+          <div class="corner br"></div>
+        </div>
+        <div class="work-card">
+          <div class="corner tl"></div>
+          <div>
+            <svg class="work-icon" viewBox="0 0 34 34" fill="none"><rect x="3" y="4" width="12" height="12" stroke="#ffef15" stroke-width="1.4"/><rect x="19" y="4" width="12" height="12" stroke="#ffef15" stroke-width="1.4"/><rect x="3" y="18" width="28" height="10" stroke="#ffef15" stroke-width="1.4"/></svg>
+            <h3>Small web apps &amp; dashboards</h3>
+            <p>Internal tools and logged-in dashboards for a business that's outgrown its spreadsheet.</p>
+          </div>
+          <div class="corner br"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- A4 BOOKING -->
+  <section id="book" class="sheet-pad">
+    <div class="wrap">
+      <div class="kicker on-dark">Sheet A4</div>
+      <h2 style="font-size:clamp(1.8rem,3.4vw,2.6rem); max-width:16ch;">Book your slot</h2>
+      <p class="lede" style="margin-top:16px;">Pick whichever fits where you are right now. Both go to the same small team, no queue of account managers in between.</p>
+
+      <div class="tabs">
+        <button class="tab active" data-panel="quote">Book a quote call</button>
+        <button class="tab" data-panel="build">Start a build</button>
+      </div>
+
+      <!-- QUOTE CALL PANEL -->
+      <div class="panel active" id="panel-quote">
+        <form id="form-quote" action="https://formspree.io/f/mqpkjnpq" method="POST">
+          <div class="form-grid">
+            <div class="field">
+              <label for="q-name">Name</label>
+              <input id="q-name" name="name" type="text" placeholder="Jordan Lee" required>
+            </div>
+            <div class="field">
+              <label for="q-call">Phone no.</label>
+              <input id="q-call" name="call" type="call" placeholder="+00 00000 00000" required>
+            </div>
+            <div class="field">
+              <label for="q-company">Company (optional)</label>
+              <input id="q-company" name="company" type="text" placeholder="Company name">
+            </div>
+            <div class="field">
+              <label for="q-date">Preferred date</label>
+              <input id="q-date" name="preferred_date" type="date" required>
+            </div>
+            <div class="field">
+              <label for="q-time">Preferred time</label>
+              <input id="q-time" name="preferred_time" type="time" required>
+            </div>
+            <div class="field">
+              <label for="q-tz">Your timezone</label>
+              <input id="q-tz" name="timezone" type="text" placeholder="e.g. IST, EST" required>
+            </div>
+            <div class="field full">
+              <label for="q-msg">What are you trying to build?</label>
+              <textarea id="q-msg" name="message" placeholder="A rough sense of the site or problem — a paragraph is plenty." required></textarea>
+            </div>
+          </div>
+          <div class="form-foot">
+            <span class="form-note">The engineer you talk to is the one who'd build it. No account manager relay.</span>
+            <button type="submit" class="btn btn-solid">Confirm quote call</button>
+          </div>
+        </form>
+        <div class="stamp-result" id="result-quote">
+          <div class="ref">REF <span id="ref-quote-num"></span> — RECEIVED</div>
+          <h3>Call requested.</h3>
+          <p>We'll confirm your slot by email within one business day. If the time doesn't hold, we'll offer the two nearest openings instead of leaving you hanging.</p>
+        </div>
+      </div>
+
+      <!-- START A BUILD PANEL -->
+      <div class="panel" id="panel-build">
+        <form id="form-build" action="https://formspree.io/f/mqpkjnpq" method="POST">
+          <div class="form-grid">
+            <div class="field">
+              <label for="b-name">Name</label>
+              <input id="b-name" name="name" type="text" placeholder="Jordan Lee" required>
+            </div>
+            <div class="field">
+              <label for="b-email">Email</label>
+              <input id="b-email" name="email" type="email" placeholder="jordan@company.com" required>
+            </div>
+            <div class="field">
+              <label for="b-type">Project type</label>
+              <select id="b-type" name="project_type" required>
+                <option value="" disabled selected>Choose one</option>
+                <option>Marketing or brand site</option>
+                <option>Online store</option>
+                <option>Booking-driven site</option>
+                <option>Web app or dashboard</option>
+                <option>Not sure yet</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="b-budget">Budget range</label>
+              <select id="b-budget" name="budget" required>
+                <option value="" disabled selected>Choose one</option>
+                <option>Under ₹6,000</option>
+                <option>₹6,000 – ₹8,000</option>
+                <option>₹8,000 – ₹10,000</option>
+                <option>₹12,000+</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="b-timeline">When do you need it live?</label>
+              <input id="b-timeline" name="timeline" type="text" placeholder="e.g. within 6 weeks" required>
+            </div>
+            <div class="field">
+              <label for="b-existing">Existing site (optional)</label>
+              <input id="b-existing" name="existing_site" type="text" placeholder="URL, if you have one">
+            </div>
+            <div class="field full">
+              <label for="b-msg">Describe the project</label>
+              <textarea id="b-msg" name="message" placeholder="Pages you need, features, anything you already know you want." required></textarea>
+            </div>
+          </div>
+          <div class="form-foot">
+            <span class="form-note">We'll follow up with the blueprint step — a written plan and fixed price before anything is billed.</span>
+            <button type="submit" class="btn btn-solid">Submit project</button>
+          </div>
+        </form>
+        <div class="stamp-result" id="result-build">
+          <div class="ref">REF <span id="ref-build-num"></span> — RECEIVED</div>
+          <h3>Project submitted.</h3>
+          <p>We'll come back with the blueprint step: a written plan, timeline, and fixed price for your sign-off before anything is billed.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- A5 CONTACT / FOOTER -->
+<footer id="contact">
+  <div class="foot-grid">
+    <div class="foot-col">
+      <h3>Have something to build? Start with a quote call.</h3>
+      <div style="margin-top:22px;">
+        <a class="btn btn-ghost on-paper" href="https://formspree.io/f/mqpkjnpq">Book a slot</a>
+      </div>
+    </div>
+    <div class="foot-col">
+      <div class="foot-label">Contact</div>
+      <a href="mailto:hello@faravoid.studio">hello@faravoid.studio</a>
+      <a href="tel:+10000000000">Call the studio</a>
+    </div>
+    <div class="foot-col">
+      <div class="foot-label">Sheets</div>
+      <a href="#services">A1 — Services</a>
+      <a href="#process">A2 — Process</a>
+      <a href="#work">A3 — Work</a>
+      <a href="#book">A4 — Booking</a>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <span>Faravoid Studio</span>
+    <span id="year-mark"></span>
+  </div>
+</footer>
+
+<script>
+  // Ruler active-section tracking
+  const marks = document.querySelectorAll('.ruler .mark');
+  const sections = Array.from(marks).map(m => document.getElementById(m.dataset.target)).filter(Boolean);
+
+  function setActive(){
+    let current = sections[0];
+    const y = window.scrollY + window.innerHeight * 0.35;
+    sections.forEach(sec => { if (sec.offsetTop <= y) current = sec; });
+    marks.forEach(m => m.classList.toggle('active', m.dataset.target === current.id));
+  }
+  window.addEventListener('scroll', setActive, { passive:true });
+  setActive();
+
+  // Coordinate readout follows cursor in hero
+  const coordEl = document.getElementById('coordReadout');
+  const cover = document.getElementById('cover');
+  cover.addEventListener('mousemove', (e) => {
+    const r = cover.getBoundingClientRect();
+    const x = Math.max(0, Math.round(e.clientX - r.left));
+    const y = Math.max(0, Math.round(e.clientY - r.top));
+    coordEl.innerHTML = `X <b>${String(x).padStart(3,'0')}</b> · Y <b>${String(y).padStart(3,'0')}</b><br>SCALE 1:1`;
+  });
+
+  // Booking tabs
+  const tabs = document.querySelectorAll('.tab');
+  const panels = { quote: document.getElementById('panel-quote'), build: document.getElementById('panel-build') };
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      Object.values(panels).forEach(p => p.classList.remove('active'));
+      panels[tab.dataset.panel].classList.add('active');
+    });
+  });
+
+  function makeRef(){
+    return 'FV-' + Math.floor(100000 + Math.random()*900000);
+  }
+
+  // Formspree submission — keeps the existing UI and confirmation screens.
+  async function submitToFormspree(form, resultId, refId, submitButton) {
+    const originalText = submitButton.textContent;
+    submitButton.disabled = true;
+    submitButton.textContent = 'Sending…';
+
+    try {
+      const response = await fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: {
+          'Accept': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Form submission failed');
+      }
+
+      document.getElementById(refId).textContent = makeRef();
+      form.style.display = 'none';
+      document.getElementById(resultId).classList.add('show');
+    } catch (error) {
+      submitButton.disabled = false;
+      submitButton.textContent = originalText;
+      alert('Something went wrong while sending your request. Please try again.');
+    }
+  }
+
+  document.getElementById('form-quote').addEventListener('submit', (e) => {
+    e.preventDefault();
+    submitToFormspree(
+      e.target,
+      'result-quote',
+      'ref-quote-num',
+      e.target.querySelector('button[type="submit"]')
+    );
+  });
+
+  document.getElementById('form-build').addEventListener('submit', (e) => {
+    e.preventDefault();
+    submitToFormspree(
+      e.target,
+      'result-build',
+      'ref-build-num',
+      e.target.querySelector('button[type="submit"]')
+    );
+  });
+
+  document.getElementById('year-mark').textContent = 'Updated ' + new Date().getFullYear();
+</script>
+
+</body>
+</html>
